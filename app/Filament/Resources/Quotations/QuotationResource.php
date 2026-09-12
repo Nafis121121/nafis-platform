@@ -33,12 +33,16 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class QuotationResource extends Resource
 {
     protected static ?string $model = Quotation::class;
     protected static ?string $modelLabel = 'استعلام قیمت';
     protected static ?string $pluralModelLabel = 'استعلام‌های قیمت';
-    protected static ?string $navigationLabel = 'استعلام قیمت';
+    protected static ?string $navigationLabel = 'استعلام‌های قیمت';
+    protected static string|UnitEnum|null $navigationGroup = 'سفارشات و بازرگانی';
+    protected static ?int $navigationSort = 2;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
     protected static ?string $recordTitleAttribute = 'reference_code';
 

@@ -20,7 +20,7 @@ class CatalogController extends Controller
         $chrome = $this->cmsService->getSiteChrome();
 
         $products = Product::query()
-            ->with(['category', 'brand'])
+            ->with(['category', 'brand', 'images'])
             ->where('is_active', true)
             ->where('status', 'active')
             ->where('catalog_visibility', 'visible')

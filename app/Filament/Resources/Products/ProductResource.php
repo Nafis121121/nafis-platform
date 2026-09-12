@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Products;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
+use App\Filament\Resources\Products\RelationManagers\ImagesRelationManager;
 use App\Filament\Resources\Products\RelationManagers\VariantsRelationManager;
 use App\Models\Brand;
 use App\Models\Category;
@@ -22,8 +23,10 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ProductResource extends Resource
 {
@@ -31,6 +34,8 @@ class ProductResource extends Resource
     protected static ?string $modelLabel = 'محصول';
     protected static ?string $pluralModelLabel = 'محصولات';
     protected static ?string $navigationLabel = 'محصولات';
+    protected static string|UnitEnum|null $navigationGroup = 'کاتالوگ و محصولات';
+    protected static ?int $navigationSort = 1;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCube;
     protected static ?string $recordTitleAttribute = 'name_fa';
 
@@ -44,22 +49,54 @@ class ProductResource extends Resource
                 TextInput::make('base_sku')->label('SKU پایه')->unique(ignoreRecord: true)->maxLength(100),
                 Select::make('category_id')
                     ->label('دسته‌بندی')
-                    ->options(fn (): array => Category::query()->where('is_active', true)->orderBy('name_fa')->pluck('name_fa', 'id')->all())
+                    ->relationship('category', 'name_fa')
                     ->searchable()
                     ->preload()
-                    ->required(),
+                    ->required()
+                    ->createOptionForm([
+                        TextInput::make('name_fa')->label('نام فارسی دسته‌بندی')->required(),
+                        TextInput::make('name_en')->label('نام انگلیسی'),
+                        TextInput::make('slug')->label('Slug')->required(),
+                    ])
+                    ->createOptionUsing(fn (array $data): string => Category::create([
+                        'name_fa' => $data['name_fa'],
+                        'name_en' => $data['name_en'] ?? null,
+                        'slug' => \Illuminate\Support\Str::slug($data['slug'] ?: $data['name_fa']),
+                        'is_active' => true,
+                    ])->id),
                 Select::make('brand_id')
                     ->label('برند')
-                    ->options(fn (): array => Brand::query()->where('is_active', true)->orderBy('name_fa')->pluck('name_fa', 'id')->all())
+                    ->relationship('brand', 'name_fa')
                     ->searchable()
                     ->preload()
-                    ->nullable(),
-                Textarea::make('description_fa')->label('توضیحات فارسی')->columnSpanFull(),
-                Textarea::make('description_en')->label('توضیحات انگلیسی')->columnSpanFull(),
+                    ->nullable()
+                    ->createOptionForm([
+                        TextInput::make('name_fa')->label('نام برند')->required(),
+                        TextInput::make('name_en')->label('نام لاتین'),
+                        TextInput::make('slug')->label('Slug')->required(),
+                    ])
+                    ->createOptionUsing(fn (array $data): string => Brand::create([
+                        'name_fa' => $data['name_fa'],
+                        'name_en' => $data['name_en'] ?? null,
+                        'slug' => \Illuminate\Support\Str::slug($data['slug'] ?: $data['name_fa']),
+                        'is_active' => true,
+                    ])->id),
+                Textarea::make('description_fa')->label('توضیحات فارسی')->rows(4)->columnSpanFull(),
+                Textarea::make('description_en')->label('توضیحات انگلیسی')->rows(3)->columnSpanFull(),
                 TextInput::make('seo_title')->label('عنوان SEO'),
                 TextInput::make('seo_slug')->label('Slug SEO'),
-                Textarea::make('seo_desc')->label('توضیحات SEO')->columnSpanFull(),
+                Textarea::make('seo_desc')->label('توضیحات SEO')->rows(3)->columnSpanFull(),
                 TextInput::make('image_alt')->label('متن جایگزین تصویر'),
+                Select::make('status')
+                    ->label('وضعیت محصول')
+                    ->options(['draft' => 'پیش‌نویس', 'active' => 'فعال'])
+                    ->default('active')
+                    ->required(),
+                Select::make('catalog_visibility')
+                    ->label('نمایش در کاتالوگ')
+                    ->options(['hidden' => 'مخفی', 'visible' => 'قابل نمایش'])
+                    ->default('visible')
+                    ->required(),
             ]),
             Section::make('قیمت و فروش')->columns(3)->schema([
                 Select::make('base_currency')
@@ -70,6 +107,7 @@ class ProductResource extends Resource
                 TextInput::make('base_price')->label('قیمت پایه')->numeric()->minValue(0),
                 TextInput::make('moq')->label('حداقل سفارش (MOQ)')->numeric()->minValue(1)->default(1)->required(),
                 Toggle::make('is_active')->label('فعال')->default(true),
+                Toggle::make('homepage_featured')->label('نمایش در اسلایدر نمونه محصولات'),
             ]),
         ]);
     }
@@ -78,6 +116,10 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('images.resolved_url')
+                    ->label('تصویر')
+                    ->circular()
+                    ->getStateUsing(fn (Product $record) => $record->images->first()?->resolved_url),
                 TextColumn::make('name_fa')->label('محصول')->searchable()->sortable(),
                 TextColumn::make('base_sku')->label('SKU')->searchable(),
                 TextColumn::make('category.name_fa')->label('دسته‌بندی')->sortable(),
@@ -85,6 +127,8 @@ class ProductResource extends Resource
                 TextColumn::make('base_price')->label('قیمت پایه')->money(fn (Product $record): string => $record->base_currency),
                 TextColumn::make('variants_count')->label('تنوع‌ها')->counts('variants')->sortable(),
                 IconColumn::make('is_active')->label('فعال')->boolean(),
+                TextColumn::make('status')->label('وضعیت')->badge(),
+                TextColumn::make('catalog_visibility')->label('کاتالوگ')->badge(),
             ])
             ->recordActions([EditAction::make()])
             ->toolbarActions([
@@ -96,7 +140,10 @@ class ProductResource extends Resource
 
     public static function getRelations(): array
     {
-        return [VariantsRelationManager::class];
+        return [
+            ImagesRelationManager::class,
+            VariantsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

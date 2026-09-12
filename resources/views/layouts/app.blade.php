@@ -106,43 +106,46 @@
     @endif
 
     <!-- Main Navigation Header -->
-    <header class="sticky top-0 z-50 glass-card border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-20">
+    <header class="sticky top-0 z-50 header-3d">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
             <!-- Brand Logo -->
-            <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                <div class="w-12 h-12 rounded-xl gradient-crimson flex items-center justify-center font-black text-xl text-white shadow-lg shadow-primary/30 group-hover:scale-105 transition-transform">
+            <a href="{{ route('home') }}" class="flex items-center gap-2.5 group flex-shrink-0">
+                <div class="w-10 h-10 rounded-xl gradient-crimson flex items-center justify-center font-black text-lg text-white shadow-lg shadow-primary/30 group-hover:scale-105 transition-transform">
                     ن
                 </div>
                 <div>
-                    <span class="block font-black text-xl tracking-tight text-white group-hover:text-gold transition-colors">
+                    <span class="block font-black text-base sm:text-lg tracking-tight text-white group-hover:text-gold transition-colors leading-tight">
                         {{ $brand['name'] ?? 'نفیس تجارت' }}
                     </span>
-                    <span class="block text-[11px] text-slate-400 font-medium">
+                    <span class="block text-[10px] text-slate-400 font-medium whitespace-nowrap">
                         {{ $brand['tagline'] ?? 'واردات · ترخیص · پخش عمده' }}
                     </span>
                 </div>
             </a>
 
             <!-- Desktop Nav Items -->
-            <nav class="hidden lg:flex items-center gap-1">
+            <nav class="hidden lg:flex items-center gap-1 sm:gap-1.5 flex-nowrap overflow-visible">
                 @foreach($chrome['menus']['header'] ?? [] as $item)
+                    @php
+                        $isActive = request()->is(ltrim($item->computed_url, '/')) || (request()->is('/') && $item->computed_url === '/');
+                    @endphp
                     @if($item->children && $item->children->count() > 0)
                         <div class="relative group">
-                            <a href="{{ $item->computed_url }}" class="flex items-center gap-1 px-3.5 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                            <a href="{{ $item->computed_url }}" class="nav-3d-pill {{ $isActive ? 'active' : '' }}">
                                 <span>{{ $item->label_fa }}</span>
-                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                <svg class="w-3 h-3 transition-transform group-hover:rotate-180 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </a>
                             <!-- Dropdown Menu -->
-                            <div class="absolute right-0 mt-1 w-56 glass-card rounded-xl shadow-2xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-white/10">
+                            <div class="absolute right-0 mt-1.5 w-52 glass-card rounded-xl shadow-2xl p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-white/15">
                                 @foreach($item->children as $child)
-                                    <a href="{{ $child->computed_url }}" class="block px-3 py-2 text-xs font-medium text-slate-300 hover:text-gold hover:bg-white/5 rounded-lg transition-colors">
+                                    <a href="{{ $child->computed_url }}" class="block px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-gold hover:bg-white/5 rounded-lg transition-colors whitespace-nowrap">
                                         {{ $child->label_fa }}
                                     </a>
                                 @endforeach
                             </div>
                         </div>
                     @else
-                        <a href="{{ $item->computed_url }}" class="px-3.5 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all {{ request()->is(ltrim($item->computed_url, '/')) || (request()->is('/') && $item->computed_url === '/') ? 'text-gold bg-white/5' : '' }}">
+                        <a href="{{ $item->computed_url }}" class="nav-3d-pill {{ $isActive ? 'active' : '' }}">
                             {{ $item->label_fa }}
                         </a>
                     @endif
@@ -150,28 +153,25 @@
             </nav>
 
             <!-- Actions -->
-            <div class="hidden sm:flex items-center gap-3">
+            <div class="hidden sm:flex items-center gap-2 flex-shrink-0">
                 @auth
                     @if(auth()->user()->isRole('customer'))
-                        <a href="{{ url('/portal') }}" class="px-4 py-2 text-xs font-bold text-gold hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-gold/30 transition-all">
+                        <a href="{{ url('/portal') }}" class="btn-3d-secondary px-3 py-1.5 text-xs font-bold text-gold hover:text-white rounded-lg">
                             پورتال مشتری
                         </a>
                     @else
-                        <a href="{{ url('/admin') }}" class="px-4 py-2 text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all">
+                        <a href="{{ url('/admin') }}" class="btn-3d-secondary px-3 py-1.5 text-xs font-bold text-slate-300 hover:text-white rounded-lg">
                             پنل مدیریت
                         </a>
                     @endif
                 @else
-                    <a href="{{ url('/portal/login') }}" class="px-4 py-2 text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all">
+                    <a href="{{ url('/portal/login') }}" class="btn-3d-secondary px-3 py-1.5 text-xs font-bold text-slate-300 hover:text-white rounded-lg">
                         ورود مشتریان
                     </a>
                 @endauth
-                <a href="/b2b" class="px-4 py-2 text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all">
-                    همکاری B2B
-                </a>
-                <a href="/requests/new" class="gradient-crimson text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-primary/30 hover:opacity-95 transition-opacity flex items-center gap-2">
+                <a href="/requests/new" class="btn-3d-primary text-white px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 whitespace-nowrap">
                     <span>ثبت درخواست تأمین</span>
-                    <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
             </div>
 

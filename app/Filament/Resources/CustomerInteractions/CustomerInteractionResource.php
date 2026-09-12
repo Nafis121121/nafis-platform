@@ -14,11 +14,17 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class CustomerInteractionResource extends Resource
 {
     protected static ?string $model = CustomerInteraction::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $modelLabel = 'پیام / تعامل مشتری';
+    protected static ?string $pluralModelLabel = 'پیام‌ها و تعاملات مشتریان';
+    protected static ?string $navigationLabel = 'پیام‌ها و تعاملات مشتریان';
+    protected static string|UnitEnum|null $navigationGroup = 'سفارشات و بازرگانی';
+    protected static ?int $navigationSort = 4;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
 
     public static function form(Schema $schema): Schema
     {

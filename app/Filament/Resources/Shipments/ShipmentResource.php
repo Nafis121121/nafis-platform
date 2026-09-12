@@ -30,13 +30,17 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class ShipmentResource extends Resource
 {
     protected static ?string $model = Shipment::class;
-    protected static ?string $modelLabel = 'محموله';
-    protected static ?string $pluralModelLabel = 'محموله‌ها';
-    protected static ?string $navigationLabel = 'محموله‌ها';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCube;
+    protected static ?string $modelLabel = 'مرسوله';
+    protected static ?string $pluralModelLabel = 'مرسولات و باربری';
+    protected static ?string $navigationLabel = 'مرسولات و باربری';
+    protected static string|UnitEnum|null $navigationGroup = 'انبار و لجستیک';
+    protected static ?int $navigationSort = 1;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
     protected static ?string $recordTitleAttribute = 'tracking_code';
 
     public static function form(Schema $schema): Schema

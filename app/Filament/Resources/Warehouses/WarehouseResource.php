@@ -24,12 +24,16 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class WarehouseResource extends Resource
 {
     protected static ?string $model = Warehouse::class;
     protected static ?string $modelLabel = 'انبار';
     protected static ?string $pluralModelLabel = 'انبارها';
     protected static ?string $navigationLabel = 'انبارها';
+    protected static string|UnitEnum|null $navigationGroup = 'انبار و لجستیک';
+    protected static ?int $navigationSort = 2;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
     protected static ?string $recordTitleAttribute = 'name';
 

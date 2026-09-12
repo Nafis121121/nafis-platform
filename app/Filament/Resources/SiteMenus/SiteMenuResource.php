@@ -15,6 +15,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class SiteMenuResource extends Resource
 {
     protected static ?string $modelLabel = 'منو';
@@ -23,9 +25,13 @@ class SiteMenuResource extends Resource
 
     protected static ?string $navigationLabel = 'منوهای سایت';
 
+    protected static string|UnitEnum|null $navigationGroup = 'مدیریت محتوا و سایت';
+
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $model = SiteMenu::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBars3;
 
     protected static ?string $recordTitleAttribute = 'title';
 

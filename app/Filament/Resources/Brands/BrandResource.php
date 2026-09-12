@@ -20,12 +20,16 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
     protected static ?string $modelLabel = 'برند';
     protected static ?string $pluralModelLabel = 'برندها';
     protected static ?string $navigationLabel = 'برندها';
+    protected static string|UnitEnum|null $navigationGroup = 'کاتالوگ و محصولات';
+    protected static ?int $navigationSort = 4;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
     protected static ?string $recordTitleAttribute = 'name_fa';
 

@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\SiteSetting;
 use App\Services\CmsService;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -21,7 +22,8 @@ class ManageSiteSettings extends Page
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
     protected static ?string $title = 'تنظیمات عمومی سایت';
     protected static ?string $navigationLabel = 'تنظیمات سایت';
-    protected static ?int $navigationSort = 100;
+    protected static string|UnitEnum|null $navigationGroup = 'مدیریت محتوا و سایت';
+    protected static ?int $navigationSort = 4;
 
     public ?array $data = [];
 

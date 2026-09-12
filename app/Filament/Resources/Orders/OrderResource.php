@@ -14,11 +14,17 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $modelLabel = 'سفارش';
+    protected static ?string $pluralModelLabel = 'سفارشات';
+    protected static ?string $navigationLabel = 'سفارشات';
+    protected static string|UnitEnum|null $navigationGroup = 'سفارشات و بازرگانی';
+    protected static ?int $navigationSort = 1;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingCart;
 
     public static function form(Schema $schema): Schema
     {

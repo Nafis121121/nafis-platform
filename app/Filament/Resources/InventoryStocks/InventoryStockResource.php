@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\InventoryStock;
 use App\Models\Warehouse;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -19,6 +20,8 @@ class InventoryStockResource extends Resource
     protected static ?string $modelLabel = 'موجودی';
     protected static ?string $pluralModelLabel = 'موجودی انبار';
     protected static ?string $navigationLabel = 'موجودی انبار';
+    protected static string|UnitEnum|null $navigationGroup = 'انبار و لجستیک';
+    protected static ?int $navigationSort = 3;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
 
     public static function table(Table $table): Table

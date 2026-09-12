@@ -15,6 +15,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class SitePageResource extends Resource
 {
     protected static ?string $modelLabel = 'صفحه';
@@ -23,9 +25,13 @@ class SitePageResource extends Resource
 
     protected static ?string $navigationLabel = 'صفحات سایت';
 
+    protected static string|UnitEnum|null $navigationGroup = 'مدیریت محتوا و سایت';
+
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $model = SitePage::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentDuplicate;
 
     protected static ?string $recordTitleAttribute = 'title_fa';
 

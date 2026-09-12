@@ -24,12 +24,16 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class SourcingRequestResource extends Resource
 {
     protected static ?string $model = SourcingRequest::class;
     protected static ?string $modelLabel = 'درخواست سورسینگ';
     protected static ?string $pluralModelLabel = 'درخواست‌های سورسینگ';
     protected static ?string $navigationLabel = 'درخواست‌های سورسینگ';
+    protected static string|UnitEnum|null $navigationGroup = 'سفارشات و بازرگانی';
+    protected static ?int $navigationSort = 3;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlass;
     protected static ?string $recordTitleAttribute = 'reference_code';
 

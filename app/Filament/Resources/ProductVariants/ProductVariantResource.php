@@ -23,12 +23,16 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class ProductVariantResource extends Resource
 {
     protected static ?string $model = ProductVariant::class;
     protected static ?string $modelLabel = 'تنوع محصول';
     protected static ?string $pluralModelLabel = 'تنوع‌های محصولات';
     protected static ?string $navigationLabel = 'تنوع‌های محصولات';
+    protected static string|UnitEnum|null $navigationGroup = 'کاتالوگ و محصولات';
+    protected static ?int $navigationSort = 5;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
     protected static ?string $recordTitleAttribute = 'sku';
 

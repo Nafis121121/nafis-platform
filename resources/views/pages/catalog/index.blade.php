@@ -35,7 +35,11 @@
             @foreach($products as $product)
                 <article class="glass-card rounded-2xl border border-white/10 p-5 hover:border-gold/30 transition-all group">
                     <div class="h-36 rounded-xl bg-gradient-to-br from-white/10 to-white/[.02] flex items-center justify-center mb-5 border border-white/5">
-                        <span class="text-4xl opacity-60">📦</span>
+                        @if($product->images->first())
+                            <img src="{{ $product->images->first()->resolved_url }}" alt="{{ $product->images->first()->alt_text ?: $product->name_fa }}" class="w-full h-full object-cover rounded-xl">
+                        @else
+                            <span class="text-4xl opacity-60">📦</span>
+                        @endif
                     </div>
                     <div class="flex items-center gap-2 text-[11px] text-gold mb-2">
                         <span>{{ $product->category?->name_fa ?? 'کالا' }}</span>
@@ -45,7 +49,9 @@
                     @if($product->name_en)<p class="text-xs text-slate-500 mt-1" dir="ltr">{{ $product->name_en }}</p>@endif
                     <div class="mt-5 flex items-center justify-between text-xs">
                         <span class="text-slate-400">MOQ: <b class="text-white">{{ number_format($product->moq) }}</b></span>
-                        <span class="text-slate-400">قیمت: <b class="text-gold">استعلام</b></span>
+                        <span class="text-slate-400">قیمت:
+                           <b class="text-gold">{{ $product->base_price !== null ? number_format((float) $product->base_price) . ' ' . $product->base_currency : 'استعلام' }}</b>
+                        </span>
                     </div>
                     <div class="mt-5 grid grid-cols-2 gap-2">
                         <a href="{{ route('catalog.show', $product) }}" class="text-center rounded-xl bg-white/5 hover:bg-white/10 px-3 py-3 text-xs font-bold text-white">مشاهده محصول</a>

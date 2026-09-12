@@ -23,13 +23,17 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class SupplierResource extends Resource
 {
     protected static ?string $model = Supplier::class;
     protected static ?string $modelLabel = 'تأمین‌کننده';
     protected static ?string $pluralModelLabel = 'تأمین‌کنندگان';
     protected static ?string $navigationLabel = 'تأمین‌کنندگان';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
+    protected static string|UnitEnum|null $navigationGroup = 'انبار و لجستیک';
+    protected static ?int $navigationSort = 4;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
     protected static ?string $recordTitleAttribute = 'company_name';
 
     public static function form(Schema $schema): Schema

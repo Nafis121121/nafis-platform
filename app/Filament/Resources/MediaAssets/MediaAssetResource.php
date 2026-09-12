@@ -14,6 +14,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class MediaAssetResource extends Resource
 {
     protected static ?string $modelLabel = 'فایل مدیا';
@@ -21,10 +23,14 @@ class MediaAssetResource extends Resource
     protected static ?string $pluralModelLabel = 'رسانه‌ها و فایل‌ها';
 
     protected static ?string $navigationLabel = 'مدیریت رسانه';
+
+    protected static string|UnitEnum|null $navigationGroup = 'مدیریت محتوا و سایت';
+
+    protected static ?int $navigationSort = 3;
     
     protected static ?string $model = MediaAsset::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
     protected static ?string $recordTitleAttribute = 'title';
 

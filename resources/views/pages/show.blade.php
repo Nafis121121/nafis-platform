@@ -2,7 +2,16 @@
 
 @section('content')
     <div class="space-y-16 sm:space-y-24">
+        @php
+            $sliderRendered = false;
+        @endphp
+
         @forelse($page->publishedBlocks as $block)
+            @if($page->slug === 'home' && ! $sliderRendered && $featuredProducts->isNotEmpty() && ($block->block_key === 'home_industries' || (isset($block->published_data['title']) && str_contains($block->published_data['title'], 'راهکارهای تجاری'))))
+                @include('components.blocks.product_slider', ['products' => $featuredProducts])
+                @php $sliderRendered = true; @endphp
+            @endif
+
             <section id="block-{{ $block->block_key ?? $block->id }}" class="block-wrapper">
                 @php
                     $type = $block->type->value;
@@ -20,6 +29,10 @@
                 @endif
             </section>
         @empty
+            @if($page->slug === 'home' && $featuredProducts->isNotEmpty() && ! $sliderRendered)
+                @include('components.blocks.product_slider', ['products' => $featuredProducts])
+            @endif
+
             <div class="max-w-4xl mx-auto px-4 py-24 text-center">
                 <div class="glass-card p-12 rounded-3xl border border-white/10">
                     <h2 class="text-2xl font-bold text-white mb-2">{{ $page->title_fa }}</h2>
@@ -27,5 +40,9 @@
                 </div>
             </div>
         @endforelse
+
+        @if($page->slug === 'home' && $featuredProducts->isNotEmpty() && ! $sliderRendered)
+            @include('components.blocks.product_slider', ['products' => $featuredProducts])
+        @endif
     </div>
 @endsection

@@ -26,7 +26,7 @@ class Product extends Model
         'moq',
         'metadata',
         'is_active',
-        'status', 'catalog_visibility', 'seo_title', 'seo_slug', 'seo_desc', 'image_alt',
+        'status', 'catalog_visibility', 'seo_title', 'seo_slug', 'seo_desc', 'image_alt', 'homepage_featured',
     ];
 
     protected $casts = [
@@ -34,6 +34,7 @@ class Product extends Model
         'moq' => 'integer',
         'metadata' => 'array',
         'is_active' => 'boolean',
+        'homepage_featured' => 'boolean',
     ];
 
     public function category(): BelongsTo
@@ -49,6 +50,11 @@ class Product extends Model
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class)->orderBy('created_at');
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('sort_order');
     }
 
     public function quotationItems(): HasMany

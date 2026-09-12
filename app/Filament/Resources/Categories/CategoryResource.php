@@ -19,13 +19,17 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use UnitEnum;
+
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
     protected static ?string $modelLabel = 'دسته‌بندی';
     protected static ?string $pluralModelLabel = 'دسته‌بندی‌ها';
     protected static ?string $navigationLabel = 'دسته‌بندی‌ها';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|UnitEnum|null $navigationGroup = 'کاتالوگ و محصولات';
+    protected static ?int $navigationSort = 3;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolder;
     protected static ?string $recordTitleAttribute = 'name_fa';
 
     public static function form(Schema $schema): Schema
