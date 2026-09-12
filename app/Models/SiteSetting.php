@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class SiteSetting extends Model
+{
+    use HasFactory, HasUuids;
+
+    protected $table = 'site_settings';
+
+    protected $fillable = [
+        'singleton',
+        'cms_enabled',
+        'brand',
+        'theme',
+        'contact',
+        'seo',
+        'social',
+    ];
+
+    protected $casts = [
+        'singleton' => 'boolean',
+        'cms_enabled' => 'boolean',
+        'brand' => 'array',
+        'theme' => 'array',
+        'contact' => 'array',
+        'seo' => 'array',
+        'social' => 'array',
+    ];
+
+    public static function current(): self
+    {
+        return static::query()->firstOrCreate(
+            ['singleton' => true],
+            [
+                'cms_enabled' => true,
+                'brand' => [
+                    'name' => 'نفیس تجارت',
+                    'tagline' => 'واردات · ترخیص · پخش عمده',
+                    'logoUrl' => '',
+                    'topbar' => 'عضو رسمی اتاق بازرگانی · کارت بازرگانی معتبر · نماد اعتماد وزارت صمت',
+                    'topbarActive' => true,
+                ],
+                'theme' => [
+                    'primary' => '#9e1b32',
+                    'primaryDeep' => '#6e1120',
+                    'gold' => '#c9a84c',
+                    'background' => '#ffffff',
+                    'foreground' => '#2b2320',
+                    'radius' => 0.9,
+                    'fontKey' => 'vazirmatn',
+                    'fontScale' => 100,
+                ],
+                'contact' => [
+                    'phoneIntl' => '+989991222261',
+                    'phoneDisplay' => '۰۹۹۹۱۲۲۲۲۶۱',
+                    'whatsapp' => 'https://wa.me/989991222261',
+                    'telegram' => 'https://t.me/Nafiskalaonline',
+                    'telegramHandle' => '@Nafiskalaonline',
+                    'instagram' => 'https://instagram.com/nafiskala.co',
+                    'instagramHandle' => 'NAFISKALA.CO',
+                    'email' => 'info@nafiskala.co',
+                    'address' => 'تهران، میدان دوم صادقیه، برج گلدیس، پلاک ۱۵۱۸، طبقه ۵، واحد ۵۰۸',
+                ],
+                'seo' => [
+                    'siteTitle' => 'نفیس تجارت | واردات و پخش عمده کالا',
+                    'description' => 'بازرگانی نفیس تجارت: واردات مستقیم کالای دیجیتال، اسباب‌بازی و لوازم عکاسی از چین و دبی، ترخیص تخصصی و پخش عمده.',
+                    'ogImage' => '',
+                    'keywords' => 'واردات کالا، ترخیص، پخش عمده، چین، دبی، کالای دیجیتال',
+                ],
+                'social' => [
+                    'telegram' => 'https://t.me/Nafiskalaonline',
+                    'instagram' => 'https://instagram.com/nafiskala.co',
+                    'whatsapp' => 'https://wa.me/989991222261',
+                ],
+            ]
+        );
+    }
+}
