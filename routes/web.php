@@ -30,6 +30,13 @@ Route::get('/cms-preview/{page}', [CmsPreviewController::class, 'show'])
     ->middleware('auth')
     ->name('cms.preview');
 
+Route::get('/logout', function () {
+    \Illuminate\Support\Facades\Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/admin/login');
+})->name('logout');
+
 // Keep this single-segment CMS route last so application routes can be added safely above it.
 Route::get('/{slug}', [PageController::class, 'show'])
     ->name('page.show')
