@@ -64,6 +64,7 @@ class QuotationPdfService
             'format' => 'A4',
             'autoScriptToLang' => true,
             'autoLangToFont' => true,
+            'useSubstitutions' => true,
             'default_font' => 'vazirmatn',
             'tempDir' => $tempDir,
             'fontDir' => array_merge($fontDirs, [public_path('fonts')]),
@@ -71,6 +72,8 @@ class QuotationPdfService
                 'vazirmatn' => [
                     'R' => 'Vazirmatn-Regular.ttf',
                     'B' => 'Vazirmatn-Bold.ttf',
+                    'useOTL' => 0xFF,
+                    'useKashida' => 75,
                 ],
             ],
             'margin_top' => 12,
@@ -79,7 +82,6 @@ class QuotationPdfService
             'margin_right' => 10,
         ]);
     }
-
     /**
      * mPDF's bidi/glyph-shaping engine emits harmless PHP notices/warnings
      * (undefined array keys) for certain RTL text layouts even when the

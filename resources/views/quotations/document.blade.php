@@ -4,217 +4,126 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>پیش‌فاکتور {{ $quotation->reference_code }}</title>
     <style>
-        @page {
-            margin: 12mm 10mm 15mm 10mm;
-            size: A4 portrait;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Vazirmatn', 'DejaVu Sans', Tahoma, sans-serif;
-        }
-
         body {
             direction: rtl;
             text-align: right;
             color: #1f2937;
-            font-size: 11px;
-            line-height: 1.5;
+            font-size: 10px;
+            line-height: 1.4;
             background: #ffffff;
             margin: 0;
             padding: 0;
+            font-family: 'vazirmatn', sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
         .header-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 12px;
-            border-bottom: 3px solid #9e1b32;
-            padding-bottom: 8px;
-        }
-
-        .header-table td {
-            vertical-align: middle;
-            border: none;
-            padding: 4px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #9e1b32;
+            padding-bottom: 6px;
         }
 
         .brand-title {
             color: #9e1b32;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            margin: 0 0 4px 0;
         }
 
         .brand-tagline {
             color: #c9a84c;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            margin: 0 0 3px 0;
+            margin: 2px 0;
         }
 
         .brand-desc {
             color: #6b7280;
-            font-size: 9px;
+            font-size: 8px;
         }
 
         .doc-title-box {
             background-color: #fcf6ea;
             border: 1px solid #c9a84c;
-            border-radius: 6px;
-            padding: 8px 12px;
+            padding: 6px 10px;
             text-align: center;
         }
 
         .doc-main-title {
             color: #9e1b32;
-            font-size: 15px;
+            font-size: 13px;
             font-weight: bold;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .doc-meta {
-            font-size: 10px;
+            font-size: 9px;
             color: #374151;
-            line-height: 1.6;
-        }
-
-        .parties-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 14px;
+            line-height: 1.5;
         }
 
         .party-card {
-            width: 49%;
             border: 1px solid #e5e7eb;
-            border-top: 2px solid #9e1b32;
             background-color: #fafafa;
-            border-radius: 4px;
-            padding: 8px 10px;
+            padding: 6px 8px;
             vertical-align: top;
-            font-size: 10px;
+            font-size: 9.5px;
         }
 
         .party-card-title {
             color: #9e1b32;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 10px;
             border-bottom: 1px dashed #d1d5db;
-            padding-bottom: 4px;
-            margin-bottom: 6px;
-        }
-
-        .party-field {
-            margin-bottom: 3px;
-        }
-
-        .party-label {
-            color: #6b7280;
-            display: inline-block;
+            padding-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 14px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         .items-table th {
             background-color: #9e1b32;
             color: #ffffff;
             font-weight: bold;
-            font-size: 10px;
-            padding: 6px 8px;
+            font-size: 9.5px;
+            padding: 5px 6px;
             border: 1px solid #9e1b32;
             text-align: center;
         }
 
         .items-table td {
             border: 1px solid #e5e7eb;
-            padding: 6px 8px;
-            font-size: 10px;
+            padding: 5px 6px;
+            font-size: 9px;
             text-align: center;
         }
 
-        .items-table tr:nth-child(even) {
+        .items-table tr.even {
             background-color: #f9fafb;
         }
 
-        .items-table td.text-right {
-            text-align: right;
-        }
-
-        .items-table td.text-left {
-            text-align: left;
-            direction: ltr;
-        }
-
-        .financial-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 14px;
-        }
-
-        .financial-table td {
-            vertical-align: top;
-            border: none;
-            padding: 0;
-        }
-
-        .terms-box {
-            width: 55%;
-            padding-left: 12px;
-            font-size: 9.5px;
-            color: #374151;
-        }
-
-        .terms-box-inner {
-            border: 1px solid #e5e7eb;
-            background-color: #fcfcfc;
-            border-radius: 4px;
-            padding: 8px 10px;
-        }
-
-        .terms-title {
-            color: #9e1b32;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .totals-box {
-            width: 45%;
-        }
-
         .totals-table {
-            width: 100%;
-            border-collapse: collapse;
             border: 1px solid #e5e7eb;
         }
 
         .totals-table td {
-            padding: 6px 10px;
-            font-size: 10px;
+            padding: 4px 8px;
+            font-size: 9.5px;
             border-bottom: 1px solid #e5e7eb;
         }
 
-        .totals-table tr.final-row {
+        .final-row td {
             background-color: #9e1b32;
-            color: #ffffff;
+            color: #ffffff !important;
             font-weight: bold;
-        }
-
-        .totals-table tr.final-row td {
-            font-size: 11px;
+            font-size: 10px;
             border-bottom: none;
-            color: #ffffff;
-        }
-
-        .signatures-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 18px;
-            margin-bottom: 12px;
         }
 
         .signatures-table td {
@@ -223,19 +132,18 @@
             vertical-align: top;
             border: 1px dashed #d1d5db;
             background-color: #fafafa;
-            border-radius: 4px;
-            padding: 10px;
-            font-size: 10px;
-            height: 75px;
+            padding: 8px;
+            font-size: 9px;
+            height: 60px;
         }
 
         .footer-note {
             text-align: center;
-            font-size: 8.5px;
+            font-size: 8px;
             color: #9ca3af;
             border-top: 1px solid #e5e7eb;
-            padding-top: 6px;
-            margin-top: 10px;
+            padding-top: 4px;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -253,12 +161,12 @@
     <!-- Header -->
     <table class="header-table">
         <tr>
-            <td style="width: 55%;">
+            <td style="width: 55%; vertical-align: top;">
                 <div class="brand-title">{{ $sellerName }}</div>
                 <div class="brand-tagline">{{ $sellerTagline }}</div>
                 <div class="brand-desc">عضو رسمی اتاق بازرگانی · دارنده کارت بازرگانی معتبر · نماد اعتماد الکترونیکی</div>
             </td>
-            <td style="width: 45%;">
+            <td style="width: 45%; vertical-align: top;">
                 <div class="doc-title-box">
                     <div class="doc-main-title">پیش‌فاکتور رسمی فروش کالا</div>
                     <div class="doc-meta">
@@ -272,22 +180,22 @@
     </table>
 
     <!-- Parties Info -->
-    <table class="parties-table">
+    <table>
         <tr>
-            <td class="party-card">
+            <td class="party-card" style="width: 48%;">
                 <div class="party-card-title">مشخصات فروشنده (تامین‌کننده)</div>
-                <div class="party-field"><span class="party-label">نام شرکت/فروشگاه:</span> <strong>{{ $sellerName }}</strong></div>
-                <div class="party-field"><span class="party-label">تلفن تماس:</span> {{ $sellerPhone }}</div>
-                <div class="party-field"><span class="party-label">پست الکترونیک:</span> {{ $sellerEmail }}</div>
-                <div class="party-field"><span class="party-label">نشانی دفتر مرکزی:</span> {{ $sellerAddress }}</div>
+                <div><span style="color: #6b7280;">نام شرکت:</span> <strong>{{ $sellerName }}</strong></div>
+                <div><span style="color: #6b7280;">تلفن:</span> {{ $sellerPhone }}</div>
+                <div><span style="color: #6b7280;">ایمیل:</span> {{ $sellerEmail }}</div>
+                <div><span style="color: #6b7280;">نشانی:</span> {{ $sellerAddress }}</div>
             </td>
-            <td style="width: 2%;"></td>
-            <td class="party-card">
+            <td style="width: 4%;"></td>
+            <td class="party-card" style="width: 48%;">
                 <div class="party-card-title">مشخصات خریدار (مشتری محترم)</div>
-                <div class="party-field"><span class="party-label">نام و نام خانوادگی / شرکت:</span> <strong>{{ $quotation->customer?->name ?? 'مشتری محترم' }}</strong></div>
-                <div class="party-field"><span class="party-label">تلفن همراه:</span> {{ $quotation->customer?->phone ?? '—' }}</div>
-                <div class="party-field"><span class="party-label">پست الکترونیک:</span> {{ $quotation->customer?->email ?? '—' }}</div>
-                <div class="party-field"><span class="party-label">شناسه کاربری:</span> {{ $quotation->customer?->id ? substr($quotation->customer->id, 0, 8) : '—' }}</div>
+                <div><span style="color: #6b7280;">خریدار:</span> <strong>{{ $quotation->customer?->name ?? 'مشتری محترم' }}</strong></div>
+                <div><span style="color: #6b7280;">تلفن همراه:</span> {{ $quotation->customer?->phone ?? '—' }}</div>
+                <div><span style="color: #6b7280;">پست الکترونیک:</span> {{ $quotation->customer?->email ?? '—' }}</div>
+                <div><span style="color: #6b7280;">شناسه مشتری:</span> {{ $quotation->customer?->id ? substr($quotation->customer->id, 0, 8) : '—' }}</div>
             </td>
         </tr>
     </table>
@@ -297,84 +205,84 @@
         <thead>
             <tr>
                 <th style="width: 6%;">ردیف</th>
-                <th style="width: 44%;">شرح و مشخصات فنی کالا</th>
+                <th style="width: 46%;">شرح و مشخصات فنی کالا</th>
                 <th style="width: 12%;">تعداد</th>
                 <th style="width: 18%;">قیمت واحد (ریال)</th>
-                <th style="width: 20%;">مبلغ کل (ریال)</th>
+                <th style="width: 18%;">مبلغ کل (ریال)</th>
             </tr>
         </thead>
         <tbody>
             @forelse($quotation->items as $index => $item)
-                <tr>
+                <tr class="{{ $index % 2 === 1 ? 'even' : '' }}">
                     <td>{{ $index + 1 }}</td>
-                    <td class="text-right">
+                    <td style="text-align: right;">
                         <strong>{{ $item->item_title }}</strong>
                         @if($item->technical_description)
-                            <div style="font-size: 8.5px; color: #4b5563; margin-top: 2px;">{{ $item->technical_description }}</div>
+                            <div style="font-size: 8px; color: #4b5563;">{{ $item->technical_description }}</div>
                         @endif
                     </td>
                     <td>{{ number_format($item->quantity) }}</td>
-                    <td>{{ number_format((float) $item->unit_price_irr) }}</td>
-                    <td>{{ number_format((float) $item->total_price_irr) }}</td>
+                    <td style="text-align: left; direction: ltr;">{{ number_format((float) $item->unit_price_irr) }}</td>
+                    <td style="text-align: left; direction: ltr;">{{ number_format((float) $item->total_price_irr) }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" style="text-align: center; color: #9ca3af; padding: 12px;">موردی ثبت نشده است</td>
+                    <td colspan="5" style="padding: 10px; color: #9ca3af;">اقلامی یافت نشد</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 
     <!-- Financial & Terms -->
-    <table class="financial-table">
+    <table>
         <tr>
-            <td class="terms-box">
-                <div class="terms-box-inner">
-                    <div class="terms-title">شرایط و توضیحات قرارداد</div>
+            <td style="width: 52%; vertical-align: top; padding-left: 8px;">
+                <div style="border: 1px solid #e5e7eb; background-color: #fcfcfc; padding: 6px 8px; font-size: 9px;">
+                    <div style="color: #9e1b32; font-weight: bold; margin-bottom: 4px;">شرایط و توضیحات قرارداد</div>
                     @if($quotation->payment_terms)
-                        <div style="margin-bottom: 4px;"><strong>شرایط پرداخت:</strong> {{ $quotation->payment_terms }}</div>
+                        <div><strong>شرایط پرداخت:</strong> {{ $quotation->payment_terms }}</div>
                     @endif
                     @if($quotation->customer_notes)
-                        <div style="margin-bottom: 4px;"><strong>ملاحظات تحویل:</strong> {{ $quotation->customer_notes }}</div>
+                        <div><strong>ملاحظات تحویل:</strong> {{ $quotation->customer_notes }}</div>
                     @endif
-                    <div style="color: #6b7280; font-size: 8.5px; margin-top: 4px;">
+                    <div style="color: #6b7280; font-size: 8px; margin-top: 4px;">
                         * قیمت‌های مندرج تا تاریخ اعتبار پیش‌فاکتور معتبر بوده و پس از آن نیاز به استعلام مجدد نرخ تسعیر و هزینه حمل دارد.
                     </div>
                 </div>
             </td>
-            <td class="totals-box">
+            <td style="width: 48%; vertical-align: top;">
                 <table class="totals-table">
                     <tr>
                         <td style="color: #4b5563;">جمع کل اقلام (ریال):</td>
-                        <td style="text-align: left; font-weight: bold;">{{ number_format((float) $quotation->subtotal_irr) }}</td>
+                        <td style="text-align: left; direction: ltr; font-weight: bold;">{{ number_format((float) $quotation->subtotal_irr) }}</td>
                     </tr>
                     @if($quotation->shipping_and_customs_irr > 0)
                         <tr>
                             <td style="color: #4b5563;">هزینه حمل و بازرسی (ریال):</td>
-                            <td style="text-align: left;">{{ number_format((float) $quotation->shipping_and_customs_irr) }}</td>
+                            <td style="text-align: left; direction: ltr;">{{ number_format((float) $quotation->shipping_and_customs_irr) }}</td>
                         </tr>
                     @endif
                     @if((float) $quotation->customs_duty_irr > 0)
                         <tr>
                             <td style="color: #4b5563;">حقوق و عوارض گمرکی (ریال):</td>
-                            <td style="text-align: left;">{{ number_format((float) $quotation->customs_duty_irr) }}</td>
+                            <td style="text-align: left; direction: ltr;">{{ number_format((float) $quotation->customs_duty_irr) }}</td>
                         </tr>
                     @endif
                     @if((float) $quotation->handling_fee_irr > 0)
                         <tr>
                             <td style="color: #4b5563;">هزینه‌های خدمات و ترخیص (ریال):</td>
-                            <td style="text-align: left;">{{ number_format((float) $quotation->handling_fee_irr) }}</td>
+                            <td style="text-align: left; direction: ltr;">{{ number_format((float) $quotation->handling_fee_irr) }}</td>
                         </tr>
                     @endif
                     @if((float) $quotation->tax_irr > 0)
                         <tr>
                             <td style="color: #4b5563;">مالیات و عوارض قانونی (ریال):</td>
-                            <td style="text-align: left;">{{ number_format((float) $quotation->tax_irr) }}</td>
+                            <td style="text-align: left; direction: ltr;">{{ number_format((float) $quotation->tax_irr) }}</td>
                         </tr>
                     @endif
                     <tr class="final-row">
                         <td>مبلغ نهایی قابل پرداخت (ریال):</td>
-                        <td style="text-align: left; font-size: 12px;">{{ number_format((float) $quotation->final_total_irr) }}</td>
+                        <td style="text-align: left; direction: ltr; font-size: 11px;">{{ number_format((float) $quotation->final_total_irr) }}</td>
                     </tr>
                 </table>
             </td>
@@ -382,23 +290,23 @@
     </table>
 
     <!-- Signatures -->
-    <table class="signatures-table">
+    <table style="margin-top: 10px;">
         <tr>
-            <td>
-                <div style="font-weight: bold; color: #9e1b32; margin-bottom: 40px;">مهر و امضای شرکت بازرگانی نفیس تجارت</div>
-                <div style="font-size: 8.5px; color: #9ca3af;">(واحد فروش و بازرگانی خارجی)</div>
+            <td class="signatures-table" style="width: 48%;">
+                <div style="font-weight: bold; color: #9e1b32; margin-bottom: 25px;">مهر و امضای شرکت بازرگانی نفیس تجارت</div>
+                <div style="font-size: 8px; color: #9ca3af;">(واحد فروش و بازرگانی خارجی)</div>
             </td>
-            <td style="width: 4%; border: none; background: transparent;"></td>
-            <td>
-                <div style="font-weight: bold; color: #374151; margin-bottom: 40px;">تایید، مهر و امضای خریدار محترم</div>
-                <div style="font-size: 8.5px; color: #9ca3af;">(صحت مشخصات و قیمت‌های فوق مورد تایید است)</div>
+            <td style="width: 4%;"></td>
+            <td class="signatures-table" style="width: 48%;">
+                <div style="font-weight: bold; color: #374151; margin-bottom: 25px;">تایید، مهر و امضای خریدار محترم</div>
+                <div style="font-size: 8px; color: #9ca3af;">(صحت مشخصات و قیمت‌های فوق مورد تایید است)</div>
             </td>
         </tr>
     </table>
 
     <!-- Footer -->
     <div class="footer-note">
-        این سند به عنوان پیش‌فاکتور رسمی توسط سامانه بازرگانی {{ $sellerName }} صادر گردیده و نسخه چاپی و دیجیتال آن دارای اعتبار است. | تلفن: {{ $sellerPhone }} | وب‌سایت: www.nafiskala.co
+        این سند به عنوان پیش‌فاکتور رسمی توسط سامانه بازرگانی {{ $sellerName }} صادر گردیده است. | تلفن: {{ $sellerPhone }} | وب‌سایت: www.nafiskala.co
     </div>
 </body>
 </html>
