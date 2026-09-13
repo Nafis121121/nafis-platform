@@ -25,6 +25,11 @@ class ManageSiteSettings extends Page
     protected static string|UnitEnum|null $navigationGroup = 'مدیریت محتوا و سایت';
     protected static ?int $navigationSort = 4;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->isRole('super_admin', 'content_manager') ?? false;
+    }
+
     public ?array $data = [];
 
     public function mount(): void

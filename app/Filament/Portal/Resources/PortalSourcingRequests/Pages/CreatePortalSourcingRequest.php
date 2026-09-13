@@ -8,6 +8,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePortalSourcingRequest extends CreateRecord
 {
     protected static string $resource = PortalSourcingRequestResource::class;
+    protected static ?string $title = 'ثبت درخواست استعلام جدید';
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

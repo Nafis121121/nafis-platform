@@ -16,13 +16,16 @@ use Filament\Tables\Table;
 class PortalQuotationResource extends Resource
 {
     protected static ?string $model = Quotation::class;
+    protected static ?string $modelLabel = 'پیش‌فاکتور';
+    protected static ?string $pluralModelLabel = 'پیش‌فاکتورها و استعلام‌ها';
+    protected static ?string $navigationLabel = 'پیش‌فاکتورها و استعلام‌ها';
+    protected static ?int $navigationSort = 2;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     public static function canViewAny(): bool
     {
-        return auth()->user()?->isRole('customer') ?? false;
+        return auth()->user()?->isRole('customer', 'super_admin') ?? false;
     }
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
     {

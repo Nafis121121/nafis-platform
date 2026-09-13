@@ -2,7 +2,10 @@
 
 namespace App\Enums;
 
-enum ShipmentStatus: string
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
+
+enum ShipmentStatus: string implements HasLabel, HasColor
 {
     case DRAFT = 'draft';
     case BOOKED = 'booked';
@@ -13,7 +16,7 @@ enum ShipmentStatus: string
     case COMPLETED = 'completed';
     case CANCELLED = 'cancelled';
 
-    public function label(): string
+    public function getLabel(): ?string
     {
         return match ($this) {
             self::DRAFT => 'پیش‌نویس',
@@ -24,6 +27,23 @@ enum ShipmentStatus: string
             self::DELIVERED_TO_WAREHOUSE => 'تحویل انبار',
             self::COMPLETED => 'تکمیل‌شده',
             self::CANCELLED => 'لغوشده',
+        };
+    }
+
+    public function label(): string
+    {
+        return $this->getLabel() ?? '';
+    }
+
+    public function getColor(): string|array|null
+    {
+        return match ($this) {
+            self::DRAFT => 'gray',
+            self::BOOKED => 'warning',
+            self::IN_TRANSIT_ORIGIN, self::ON_WATER_AIR => 'info',
+            self::CUSTOMS_CLEARANCE => 'primary',
+            self::DELIVERED_TO_WAREHOUSE, self::COMPLETED => 'success',
+            self::CANCELLED => 'danger',
         };
     }
 }

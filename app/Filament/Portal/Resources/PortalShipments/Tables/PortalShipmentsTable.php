@@ -11,13 +11,15 @@ class PortalShipmentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('tracking_code')->label('کد رهگیری')->searchable(),
-                TextColumn::make('bill_of_lading')->label('بارنامه')->searchable(),
-                TextColumn::make('method')->badge(),
-                TextColumn::make('status')->badge(),
-                TextColumn::make('eta')->date()->label('ETA'),
-                TextColumn::make('ata')->date()->label('ATA'),
+                TextColumn::make('tracking_code')->label('کد رهگیری')->searchable()->sortable(),
+                TextColumn::make('bill_of_lading')->label('شماره بارنامه')->searchable(),
+                TextColumn::make('method')->label('روش حمل')->badge(),
+                TextColumn::make('status')->label('وضعیت ارسال')->badge(),
+                TextColumn::make('eta')->label('زمان تقریبی رسیدن (ETA)')->date('Y/m/d')->sortable(),
+                TextColumn::make('ata')->label('زمان تحویل قطعی (ATA)')->date('Y/m/d')->sortable(),
             ])
+            ->emptyStateHeading('هیچ محموله‌ای ثبت نشده است')
+            ->emptyStateDescription('اطلاعات بارگیری، بارنامه و زمان‌بندی ترخیص و تحویل مرسوله‌ها در این بخش قرار می‌گیرد.')
             ->filters([
                 //
             ])

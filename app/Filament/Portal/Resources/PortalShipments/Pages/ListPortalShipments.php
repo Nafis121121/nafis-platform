@@ -8,6 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListPortalShipments extends ListRecords
 {
     protected static string $resource = PortalShipmentResource::class;
+    protected static ?string $title = 'محموله‌ها و رهگیری بار';
 
     protected function getHeaderActions(): array
     {

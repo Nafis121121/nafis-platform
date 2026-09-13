@@ -8,6 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListPortalOrders extends ListRecords
 {
     protected static string $resource = PortalOrderResource::class;
+    protected static ?string $title = 'سفارش‌های من';
 
     protected function getHeaderActions(): array
     {

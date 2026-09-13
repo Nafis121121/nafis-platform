@@ -62,6 +62,19 @@ class PhaseSixAccessAndCrmTest extends TestCase
         $customer = User::factory()->create(['role' => 'customer']);
         $this->assertFalse($customer->canAccessPanel(Panel::make()->id('admin')));
         $this->assertTrue(User::factory()->create(['role' => 'super_admin'])->canAccessPanel(Panel::make()->id('admin')));
+
+        // HTTP request test: customer receives 403 when trying to access admin panel
+        $response = $this->actingAs($customer)->get('/admin');
+        $response->assertForbidden();
+
+        // Customer can access portal
+        $portalResponse = $this->actingAs($customer)->get('/portal');
+        $portalResponse->assertSuccessful();
+
+        // Super admin can access admin panel
+        $adminUser = User::factory()->create(['role' => 'super_admin']);
+        $adminResponse = $this->actingAs($adminUser)->get('/admin');
+        $adminResponse->assertSuccessful();
     }
 
     public function test_resource_visibility_is_limited_by_staff_role(): void

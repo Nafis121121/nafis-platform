@@ -11,11 +11,13 @@ class PortalSourcingRequestsTable
     {
         return $table
             ->columns([
-                TextColumn::make('reference_code')->label('کد پیگیری'),
-                TextColumn::make('title')->label('عنوان')->searchable(),
-                TextColumn::make('status')->badge(),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('reference_code')->label('کد پیگیری')->searchable()->sortable(),
+                TextColumn::make('title')->label('عنوان درخواست')->searchable()->limit(50),
+                TextColumn::make('status')->label('وضعیت')->badge(),
+                TextColumn::make('created_at')->label('تاریخ ثبت')->dateTime('Y/m/d H:i')->sortable(),
             ])
+            ->emptyStateHeading('هیچ درخواست استعلامی ثبت نشده است')
+            ->emptyStateDescription('برای ثبت درخواست استعلام یا تأمین کالا، از دکمه «ثبت درخواست استعلام جدید» استفاده کنید.')
             ->filters([
                 //
             ])

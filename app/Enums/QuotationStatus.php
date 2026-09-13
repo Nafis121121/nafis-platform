@@ -2,7 +2,10 @@
 
 namespace App\Enums;
 
-enum QuotationStatus: string
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
+
+enum QuotationStatus: string implements HasLabel, HasColor
 {
     case DRAFT = 'draft';
     case SUBMITTED = 'submitted';
@@ -12,7 +15,7 @@ enum QuotationStatus: string
     case CONVERTED_TO_ORDER = 'converted_to_order';
     case EXPIRED = 'expired';
 
-    public function label(): string
+    public function getLabel(): ?string
     {
         return match ($this) {
             self::DRAFT => 'پیش‌نویس',
@@ -22,6 +25,24 @@ enum QuotationStatus: string
             self::REJECTED => 'ردشده',
             self::CONVERTED_TO_ORDER => 'تبدیل‌شده به سفارش',
             self::EXPIRED => 'منقضی‌شده',
+        };
+    }
+
+    public function label(): string
+    {
+        return $this->getLabel() ?? '';
+    }
+
+    public function getColor(): string|array|null
+    {
+        return match ($this) {
+            self::DRAFT => 'gray',
+            self::SUBMITTED => 'info',
+            self::UNDER_REVIEW => 'warning',
+            self::APPROVED => 'success',
+            self::REJECTED => 'danger',
+            self::CONVERTED_TO_ORDER => 'primary',
+            self::EXPIRED => 'danger',
         };
     }
 }

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
 
@@ -88,10 +89,16 @@ class User extends Authenticatable
         return in_array($this->role, $roles, true);
     }
 
-    public function canAccessPanel(\Filament\Panel $panel): bool
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $panel->getId() === 'portal'
-            ? $this->isRole('customer')
-            : $this->isRole('super_admin', 'sales_manager', 'content_manager', 'warehouse_staff');
+        if ($panel->getId() === 'portal') {
+            return $this->isRole('customer', 'super_admin');
+        }
+
+        if ($panel->getId() === 'admin') {
+            return $this->isRole('super_admin', 'sales_manager', 'content_manager', 'warehouse_staff');
+        }
+
+        return false;
     }
 }

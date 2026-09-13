@@ -8,6 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListPortalQuotations extends ListRecords
 {
     protected static string $resource = PortalQuotationResource::class;
+    protected static ?string $title = 'پیش‌فاکتورها و استعلام‌ها';
 
     protected function getHeaderActions(): array
     {

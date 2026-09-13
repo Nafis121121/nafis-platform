@@ -13,32 +13,35 @@ class PortalOrdersTable
     {
         return $table
             ->columns([
-                TextColumn::make('reference_code')->label('کد سفارش')->searchable(),
-                TextColumn::make('status')->badge(),
-                TextColumn::make('payment_status')->badge(),
-                TextColumn::make('balance_irr')->label('مانده')->numeric(),
-                TextColumn::make('incoterms')->label('اینکوترمز'),
+                TextColumn::make('reference_code')->label('شماره سفارش')->searchable()->sortable(),
+                TextColumn::make('status')->label('وضعیت سفارش')->badge(),
+                TextColumn::make('payment_status')->label('وضعیت پرداخت')->badge(),
+                TextColumn::make('balance_irr')->label('مانده تسویه (ریال)')->numeric()->sortable(),
+                TextColumn::make('incoterms')->label('شرایط تحویل (Incoterms)'),
             ])
+            ->emptyStateHeading('هیچ سفارشی ثبت نشده است')
+            ->emptyStateDescription('پس از تأیید پیش‌فاکتور و آغاز فرایند خرید، سفارش‌های شما در این قسمت قابل پیگیری خواهند بود.')
             ->filters([
                 //
             ])
             ->recordActions([
                 Action::make('submitPayment')
-                    ->label('ثبت فیش پرداخت')
+                    ->label('ثبت فیش واریزی')
+                    ->icon('heroicon-o-credit-card')
                     ->form([
-                        TextInput::make('amount_irr')->label('مبلغ ریالی')->numeric()->required(),
-                        Select::make('type')->options([
+                        TextInput::make('amount_irr')->label('مبلغ ریالی پرداختی')->numeric()->required(),
+                        Select::make('type')->label('نوع پرداخت')->options([
                             'deposit' => 'پیش‌پرداخت',
                             'milestone' => 'مرحله‌ای',
                             'final_balance' => 'تسویه نهایی',
                         ])->required(),
-                        Select::make('method')->options([
-                            'bank_transfer' => 'واریز بانکی',
-                            'gateway' => 'درگاه',
+                        Select::make('method')->label('روش پرداخت')->options([
+                            'bank_transfer' => 'واریز به حساب / فیش بانکی',
+                            'gateway' => 'درگاه پرداخت آنلاین',
                             'cash' => 'نقدی',
-                            'cheque' => 'چک',
+                            'cheque' => 'چک صیادی',
                         ])->required(),
-                        FileUpload::make('proof_path')->disk('public')->directory('payment-proofs')->required(),
+                        FileUpload::make('proof_path')->label('تصویر فیش / رسید واریزی')->disk('public')->directory('payment-proofs')->required(),
                     ])
                     ->action(fn (\App\Models\Order $record, array $data) => app(\App\Services\PaymentService::class)->record($record, $data)),
             ])

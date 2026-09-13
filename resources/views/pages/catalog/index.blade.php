@@ -31,31 +31,44 @@
     </form>
 
     @if($products->count())
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
             @foreach($products as $product)
-                <article class="glass-card rounded-2xl border border-white/10 p-5 hover:border-gold/30 transition-all group">
-                    <div class="h-36 rounded-xl bg-gradient-to-br from-white/10 to-white/[.02] flex items-center justify-center mb-5 border border-white/5">
-                        @if($product->images->first())
-                            <img src="{{ $product->images->first()->resolved_url }}" alt="{{ $product->images->first()->alt_text ?: $product->name_fa }}" class="w-full h-full object-cover rounded-xl">
-                        @else
-                            <span class="text-4xl opacity-60">📦</span>
+                @php
+                    $image = $product->images->first();
+                @endphp
+                <article class="glass-card rounded-2xl border border-white/10 p-3 hover:border-gold/50 hover:shadow-xl hover:shadow-black/40 hover:-translate-y-1 transition-all duration-200 group flex flex-col">
+                    <a href="{{ route('catalog.show', $product) }}" class="block">
+                        <div class="w-full aspect-square rounded-xl bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/10 p-2.5 flex items-center justify-center overflow-hidden group-hover:bg-white/[0.1] transition">
+                            @if($image)
+                                <img src="{{ $image->resolved_url }}" alt="{{ $image->alt_text ?: $product->name_fa }}" class="w-full h-full object-contain rounded-lg group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                            @else
+                                <span class="text-3xl opacity-50">📦</span>
+                            @endif
+                        </div>
+                    </a>
+                    <div class="mt-2.5 flex items-center justify-between gap-2 text-[10px] text-gold font-bold">
+                        <span class="truncate">{{ $product->category?->name_fa ?? 'کالا' }}</span>
+                        @if($product->brand)
+                            <span class="text-slate-400 font-normal truncate">{{ $product->brand->name_fa }}</span>
                         @endif
                     </div>
-                    <div class="flex items-center gap-2 text-[11px] text-gold mb-2">
-                        <span>{{ $product->category?->name_fa ?? 'کالا' }}</span>
-                        @if($product->brand)<span class="text-slate-600">•</span><span class="text-slate-400">{{ $product->brand->name_fa }}</span>@endif
-                    </div>
-                    <h2 class="text-lg font-black text-white group-hover:text-gold transition-colors">{{ $product->name_fa }}</h2>
-                    @if($product->name_en)<p class="text-xs text-slate-500 mt-1" dir="ltr">{{ $product->name_en }}</p>@endif
-                    <div class="mt-5 flex items-center justify-between text-xs">
-                        <span class="text-slate-400">MOQ: <b class="text-white">{{ number_format($product->moq) }}</b></span>
-                        <span class="text-slate-400">قیمت:
-                           <b class="text-gold">{{ $product->base_price !== null ? number_format((float) $product->base_price) . ' ' . $product->base_currency : 'استعلام' }}</b>
-                        </span>
-                    </div>
-                    <div class="mt-5 grid grid-cols-2 gap-2">
-                        <a href="{{ route('catalog.show', $product) }}" class="text-center rounded-xl bg-white/5 hover:bg-white/10 px-3 py-3 text-xs font-bold text-white">مشاهده محصول</a>
-                        <a href="{{ route('sourcing.create', ['product' => $product->slug]) }}" class="text-center rounded-xl gradient-crimson px-3 py-3 text-xs font-bold text-white">درخواست تأمین</a>
+                    <a href="{{ route('catalog.show', $product) }}" class="block">
+                        <h2 class="mt-1 text-xs sm:text-sm font-bold text-white group-hover:text-gold transition-colors line-clamp-2 leading-snug">{{ $product->name_fa }}</h2>
+                    </a>
+                    @if($product->name_en)
+                        <p class="mt-1 text-[10px] text-slate-500 line-clamp-1" dir="ltr">{{ $product->name_en }}</p>
+                    @endif
+                    <div class="mt-auto pt-3">
+                        <div class="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 text-[10px]">
+                            <span class="text-slate-400">حداقل: <b class="text-slate-200">{{ number_format($product->moq) }}</b></span>
+                            <span class="text-gold font-bold text-[11px] text-left">
+                                {{ $product->base_price !== null ? number_format((float) $product->base_price) . ' ' . $product->base_currency : 'استعلام' }}
+                            </span>
+                        </div>
+                        <div class="mt-2 grid grid-cols-2 gap-2">
+                            <a href="{{ route('catalog.show', $product) }}" class="text-center rounded-lg bg-white/5 hover:bg-white/10 px-2 py-2 text-[10px] font-bold text-white">مشاهده</a>
+                            <a href="{{ route('sourcing.create', ['product' => $product->slug]) }}" class="text-center rounded-lg gradient-crimson px-2 py-2 text-[10px] font-bold text-white">استعلام</a>
+                        </div>
                     </div>
                 </article>
             @endforeach

@@ -9,11 +9,12 @@ use Filament\Resources\Pages\ListRecords;
 class ListPortalSourcingRequests extends ListRecords
 {
     protected static string $resource = PortalSourcingRequestResource::class;
+    protected static ?string $title = 'درخواست‌های استعلام کالا';
 
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()->label('ثبت درخواست استعلام جدید'),
         ];
     }
 }

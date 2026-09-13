@@ -2,7 +2,10 @@
 
 namespace App\Enums;
 
-enum SourcingRequestStatus: string
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
+
+enum SourcingRequestStatus: string implements HasLabel, HasColor
 {
     case PENDING = 'pending';
     case IN_PROGRESS = 'in_progress';
@@ -11,7 +14,7 @@ enum SourcingRequestStatus: string
     case REJECTED = 'rejected';
     case CLOSED = 'closed';
 
-    public function label(): string
+    public function getLabel(): ?string
     {
         return match ($this) {
             self::PENDING => 'در انتظار بررسی',
@@ -20,6 +23,23 @@ enum SourcingRequestStatus: string
             self::SUPPLIER_FOUND => 'تأمین‌کننده پیدا شد',
             self::REJECTED => 'رد شده',
             self::CLOSED => 'بسته شده',
+        };
+    }
+
+    public function label(): string
+    {
+        return $this->getLabel() ?? '';
+    }
+
+    public function getColor(): string|array|null
+    {
+        return match ($this) {
+            self::PENDING => 'warning',
+            self::IN_PROGRESS => 'info',
+            self::QUOTED => 'success',
+            self::SUPPLIER_FOUND => 'primary',
+            self::REJECTED => 'danger',
+            self::CLOSED => 'gray',
         };
     }
 }
