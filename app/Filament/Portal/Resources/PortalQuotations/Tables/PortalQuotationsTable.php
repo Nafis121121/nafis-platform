@@ -24,9 +24,32 @@ class PortalQuotationsTable
             ])
             ->recordActions([
                 Action::make('download')
-                    ->label('دانلود PDF پیش‌فاکتور')
+                    ->label('دانلود PDF')
                     ->icon('heroicon-o-arrow-down-tray')
+                    ->color('gray')
                     ->action(fn (\App\Models\Quotation $record) => app(\App\Services\QuotationPdfService::class)->download($record)),
+                Action::make('sendWhatsapp')
+                    ->label('واتساپ')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('success')
+                    ->openUrlInNewTab()
+                    ->url(function (\App\Models\Quotation $record) {
+                        $text = "پیش‌فاکتور شماره {$record->reference_code} بازرگانی نفیس تجارت\n"
+                              . "مبلغ کل: " . number_format((float) $record->final_total_irr) . " ریال\n"
+                              . "مشاهده در پورتال: " . url('/portal');
+                        return "https://wa.me/?text=" . urlencode($text);
+                    }),
+                Action::make('sendTelegram')
+                    ->label('تلگرام')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('info')
+                    ->openUrlInNewTab()
+                    ->url(function (\App\Models\Quotation $record) {
+                        $text = "پیش‌فاکتور شماره {$record->reference_code} بازرگانی نفیس تجارت\n"
+                              . "مبلغ کل: " . number_format((float) $record->final_total_irr) . " ریال";
+                        $url = url('/portal');
+                        return "https://t.me/share/url?url=" . urlencode($url) . "&text=" . urlencode($text);
+                    }),
             ])
             ->toolbarActions([]);
     }

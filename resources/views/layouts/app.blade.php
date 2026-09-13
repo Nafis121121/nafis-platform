@@ -82,6 +82,9 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-primary selection:text-white">
 
+    <!-- Currency Live Ticker -->
+    <x-currency-ticker />
+
     <!-- Topbar -->
     @if(!empty($brand['topbarActive']))
         <aside class="bg-obsidian border-b border-white/5 text-xs text-slate-400 py-2">

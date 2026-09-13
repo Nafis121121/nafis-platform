@@ -11,6 +11,7 @@ use App\Filament\Widgets\PortalOverview;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -39,6 +40,10 @@ class PortalPanelProvider extends PanelProvider
                 PortalDashboard::class,
             ])
             ->widgets([PortalOverview::class])
+            ->renderHook(
+                PanelsRenderHook::TOPBAR_BEFORE,
+                fn () => view('components.currency-ticker'),
+            )
             ->middleware([
                 EncryptCookies::class, AddQueuedCookiesToResponse::class, StartSession::class,
                 AuthenticateSession::class, ShareErrorsFromSession::class, VerifyCsrfToken::class,

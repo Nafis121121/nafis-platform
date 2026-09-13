@@ -4,9 +4,12 @@ namespace App\Filament\Pages;
 
 use App\Models\SiteSetting;
 use App\Services\CmsService;
+use App\Services\CurrencyExchangeService;
 use BackedEnum;
 use UnitEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -15,6 +18,7 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Support\RawJs;
 
 class ManageSiteSettings extends Page
 {
@@ -37,6 +41,26 @@ class ManageSiteSettings extends Page
         $this->form->fill(SiteSetting::current()->toArray());
     }
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('syncExchangeRates')
+                ->label('دریافت فوری نرخ ارز')
+                ->icon('heroicon-o-arrow-path')
+                ->color('gray')
+                ->action(function (): void {
+                    app(CurrencyExchangeService::class)->refreshFromProvider();
+                    $this->form->fill(SiteSetting::current()->toArray());
+
+                    Notification::make()
+                        ->title('درخواست به‌روزرسانی نرخ ارز ارسال شد.')
+                        ->body('در صورت فعال بودن حالت خودکار، نرخ‌ها به‌روزرسانی شدند؛ در غیر این صورت نرخ‌های دستی حفظ شدند.')
+                        ->success()
+                        ->send();
+                }),
+        ];
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -51,6 +75,57 @@ class ManageSiteSettings extends Page
                             Toggle::make('brand.topbarActive')->label('نمایش نوار بالای سایت')->default(true),
                             TextInput::make('brand.logoUrl')->label('مسیر / URL لوگو')->maxLength(500),
                         ]),
+                    Tabs\Tab::make('نرخ‌های پایه بازرگانی')
+                        ->schema([
+                            Toggle::make('pricing.rate_mode')
+                                ->label('دریافت خودکار نرخ ارز')
+                                ->helperText('در حالت روشن، نرخ‌ها به‌صورت زمان‌بندی‌شده از منبع وب دریافت می‌شوند. در حالت خاموش، فقط مقادیر دستی زیر ملاک محاسبات خواهند بود.')
+                                ->afterStateHydrated(fn ($component, $state) => $component->state($state === 'auto'))
+                                ->dehydrateStateUsing(fn ($state) => $state ? 'auto' : 'manual')
+                                ->live(),
+                            Placeholder::make('pricing.rate_last_synced_at')
+                                ->label('آخرین به‌روزرسانی نرخ')
+                                ->content(function () {
+                                    $syncedAt = SiteSetting::current()->pricing['rate_last_synced_at'] ?? null;
+
+                                    return $syncedAt
+                                        ? \Illuminate\Support\Carbon::parse($syncedAt)->translatedFormat('Y/m/d H:i')
+                                        : 'هنوز به‌روزرسانی نشده است';
+                                }),
+                            TextInput::make('pricing.exchange_rate_cny')
+                                ->label('نرخ حواله یوان (CNY به ریال)')
+                                ->mask(RawJs::make('$money($input, \'.\', \',\', 0)'))
+                                ->stripCharacters(',')
+                                ->numeric()
+                                ->helperText('نرخ روز حواله یوان چین به ریال ایران'),
+                            TextInput::make('pricing.exchange_rate_aed')
+                                ->label('نرخ حواله درهم (AED به ریال)')
+                                ->mask(RawJs::make('$money($input, \'.\', \',\', 0)'))
+                                ->stripCharacters(',')
+                                ->numeric()
+                                ->helperText('نرخ روز حواله درهم امارات به ریال ایران'),
+                            TextInput::make('pricing.exchange_rate_usd')
+                                ->label('نرخ حواله دلار (USD به ریال)')
+                                ->mask(RawJs::make('$money($input, \'.\', \',\', 0)'))
+                                ->stripCharacters(',')
+                                ->numeric()
+                                ->helperText('نرخ روز دلار به ریال ایران'),
+                            TextInput::make('pricing.default_margin_percentage')
+                                ->label('درصد سود پیش‌فرض بازرگانی')
+                                ->numeric()
+                                ->suffix('%')
+                                ->minValue(0)
+                                ->maxValue(100)
+                                ->helperText('درصد مارجین استاندارد روی استعلام‌ها'),
+                            TextInput::make('pricing.shipping_rate_per_kg')
+                                ->label('نرخ پایه حمل هوایی (هر کیلو)')
+                                ->numeric()
+                                ->helperText('نرخ ارزی پایه به ازای هر کیلوگرم'),
+                            TextInput::make('pricing.shipping_rate_per_cbm')
+                                ->label('نرخ پایه حمل دریایی (هر CBM)')
+                                ->numeric()
+                                ->helperText('نرخ ارزی پایه به ازای هر متر مکعب'),
+                        ])->columns(2),
                     Tabs\Tab::make('رنگ و ظاهر')
                         ->schema([
                             ColorPicker::make('theme.primary')->label('رنگ اصلی'),

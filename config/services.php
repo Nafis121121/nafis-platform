@@ -40,4 +40,9 @@ return [
         'timeout' => (int) env('AI_PRODUCT_TIMEOUT', 30),
     ],
 
+    'currency_exchange' => [
+        'url' => env('CURRENCY_EXCHANGE_API_URL'),
+        'timeout' => (int) env('CURRENCY_EXCHANGE_API_TIMEOUT', 10),
+    ],
+
 ];

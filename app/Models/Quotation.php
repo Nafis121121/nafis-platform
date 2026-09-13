@@ -71,4 +71,19 @@ class Quotation extends Model
     {
         return $this->hasMany(SourcingRequest::class);
     }
+
+    /**
+     * هزینه حمل، بازرسی، گمرک و ترخیص به ریال (بخش «خدمات» جمع نهایی).
+     * ارقام ارزی فقط یک‌بار با نرخ تسعیر همین سند تبدیل می‌شوند.
+     */
+    public function getShippingAndCustomsIrrAttribute(): float
+    {
+        $rate = (float) $this->exchange_rate;
+        $shipping = (float) $this->shipping_cost_base_currency
+            + (float) $this->shipping_weight_kg * (float) $this->shipping_rate_per_kg
+            + (float) $this->shipping_volume_cbm * (float) $this->shipping_rate_per_cbm;
+        $inspection = (float) $this->inspection_fee_base_currency;
+
+        return round(($shipping + $inspection) * $rate);
+    }
 }

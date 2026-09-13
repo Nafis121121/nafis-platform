@@ -20,6 +20,7 @@ class SiteSetting extends Model
         'contact',
         'seo',
         'social',
+        'pricing',
     ];
 
     protected $casts = [
@@ -30,6 +31,7 @@ class SiteSetting extends Model
         'contact' => 'array',
         'seo' => 'array',
         'social' => 'array',
+        'pricing' => 'array',
     ];
 
     public static function current(): self
@@ -76,6 +78,17 @@ class SiteSetting extends Model
                     'telegram' => 'https://t.me/Nafiskalaonline',
                     'instagram' => 'https://instagram.com/nafiskala.co',
                     'whatsapp' => 'https://wa.me/989991222261',
+                ],
+                'pricing' => [
+                    'exchange_rate_cny' => 125000,
+                    'exchange_rate_aed' => 245000,
+                    'exchange_rate_usd' => 900000,
+                    'default_margin_percentage' => 15,
+                    'shipping_rate_per_kg' => 5.5,
+                    'shipping_rate_per_cbm' => 180,
+                    'rate_mode' => 'manual',
+                    'rate_source' => null,
+                    'rate_last_synced_at' => null,
                 ],
             ]
         );
