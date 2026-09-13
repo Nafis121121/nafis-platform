@@ -21,7 +21,7 @@ class AiProductDraftForm
                     TextInput::make('source_url')->label('آدرس منبع (URL)')->url()->required()->disabled(),
                     Select::make('status')
                         ->label('وضعیت پیش‌نویس')
-                        ->options(collect(\App\Enums\AiProductDraftStatus::cases())->mapWithKeys(fn ($s) => [$s->value => $s->value])->all())
+                        ->options(collect(\App\Enums\AiProductDraftStatus::cases())->mapWithKeys(fn ($s) => [$s->value => $s->getLabel()])->all())
                         ->required(),
                 ]),
                 Section::make('مشخصات محصول')->columns(2)->schema([

@@ -47,7 +47,7 @@ class ListAiProductDrafts extends ListRecords
                     } catch (Throwable $e) {
                         Notification::make()
                             ->title('خطا در استخراج هوش مصنوعی')
-                            ->body($e->getMessage())
+                            ->body(mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8'))
                             ->danger()
                             ->send();
                     }

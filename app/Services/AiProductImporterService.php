@@ -12,9 +12,30 @@ use Throwable;
 
 class AiProductImporterService
 {
+    public function sanitizeUtf8(mixed $data): mixed
+    {
+        if (is_string($data)) {
+            if (! mb_check_encoding($data, 'UTF-8')) {
+                $converted = @mb_convert_encoding($data, 'UTF-8', 'GB18030, GBK, GB2312, BIG5, Windows-1256, Windows-1252, ISO-8859-1');
+                if (is_string($converted) && mb_check_encoding($converted, 'UTF-8')) {
+                    $data = $converted;
+                }
+            }
+            return mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+        }
+
+        if (is_array($data)) {
+            return array_map([$this, 'sanitizeUtf8'], $data);
+        }
+
+        return $data;
+    }
+
     public function importFromUrl(string $sourceUrl, ?string $rawText = null, ?int $createdBy = null): AiProductDraft
     {
-        $sourceUrl = trim($sourceUrl);
+        $sourceUrl = trim($this->sanitizeUtf8($sourceUrl));
+        $rawText = $rawText !== null ? $this->sanitizeUtf8($rawText) : null;
+
         if (! filter_var($sourceUrl, FILTER_VALIDATE_URL)) {
             if (filled($sourceUrl)) {
                 // If user entered a product name/model instead of a full URL
@@ -29,7 +50,7 @@ class AiProductImporterService
         }
 
         $source = $this->fetchSource($sourceUrl);
-        $payload = $this->extractProductData($sourceUrl, $source, $rawText);
+        $payload = $this->sanitizeUtf8($this->extractProductData($sourceUrl, $source, $rawText));
         $name = $payload['name'] ?? $this->extractSlugName($sourceUrl);
 
         return AiProductDraft::create([
@@ -289,7 +310,7 @@ class AiProductImporterService
                 return '';
             }
 
-            return $response->body();
+            return (string) $this->sanitizeUtf8($response->body());
         } catch (Throwable $e) {
             return '';
         }
@@ -446,7 +467,9 @@ class AiProductImporterService
         $extractedObj = [];
         foreach ($keys as $key) {
             if (preg_match('/"' . preg_quote($key, '/') . '"\s*:\s*"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"/s', $content, $m)) {
-                $extractedObj[$key] = stripcslashes($m[1]);
+                $val = json_decode('"' . $m[1] . '"');
+                $extractedObj[$key] = is_string($val) ? $val : stripcslashes($m[1]);
+                $extractedObj[$key] = (string) $this->sanitizeUtf8($extractedObj[$key]);
             }
         }
 

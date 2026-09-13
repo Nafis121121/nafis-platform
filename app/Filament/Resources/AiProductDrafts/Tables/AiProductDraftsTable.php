@@ -32,7 +32,7 @@ class AiProductDraftsTable
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
-                SelectFilter::make('status')->options(collect(\App\Enums\AiProductDraftStatus::cases())->mapWithKeys(fn ($s) => [$s->value => $s->value])->all()),
+                SelectFilter::make('status')->options(collect(\App\Enums\AiProductDraftStatus::cases())->mapWithKeys(fn ($s) => [$s->value => $s->getLabel()])->all()),
             ])
             ->recordActions([
                 EditAction::make(),
