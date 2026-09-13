@@ -35,8 +35,11 @@ class QuotationPricingTest extends TestCase
             'base_currency' => 'USD',
             'exchange_rate' => 500000,
             'margin_percentage' => 10,
-            'customs_duty_irr' => 1000000,
-            'tax_irr' => 500000,
+            'shipping_weight_kg' => 2,
+            'shipping_rate_per_kg' => 55,
+            'customs_rate_per_kg_irr' => 6950000,
+            'inland_shipping_irr' => 1000000,
+            'unforeseen_cost_irr' => 500000,
         ]);
         $quotation->items()->create([
             'product_id' => $product->id,
@@ -50,7 +53,7 @@ class QuotationPricingTest extends TestCase
         $quotation->refresh();
         $this->assertSame('200.0000', $quotation->subtotal_base_currency);
         $this->assertSame('100000000', $quotation->subtotal_irr);
-        $this->assertSame('110000000', $quotation->items->first()->total_price_irr);
-        $this->assertSame('111600000', $quotation->final_total_irr);
+        $this->assertSame('100000000', $quotation->items->first()->total_price_irr);
+        $this->assertSame('187440000', $quotation->final_total_irr);
     }
 }

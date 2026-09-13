@@ -80,27 +80,31 @@ class QuotationResource extends Resource
                             TextInput::make('technical_description')->label('شرح فنی'),
                             TextInput::make('quantity')->label('تعداد')->numeric()->minValue(1)->default(1)->required()->live()
                                 ->afterStateUpdated(fn (Get $get, Set $set): mixed => self::updateItemTotals($get, $set)),
-                            TextInput::make('unit_cost_currency')->label('قیمت خرید ارزی')->numeric()->minValue(0)->required()->live()
+                            TextInput::make('unit_cost_currency')->label('قیمت خرید ارزی')->numeric()->minValue(0)->required()->live()->suffix(fn (Get $get): string => (string) ($get('../../base_currency') ?: 'ارز'))
                                 ->afterStateUpdated(fn (Get $get, Set $set): mixed => self::updateItemTotals($get, $set)),
                             TextInput::make('unit_price_irr')->label('قیمت فروش واحد (ریال)')->numeric()->minValue(0)->required()->live()
                                 ->afterStateUpdated(fn (Get $get, Set $set): mixed => self::updateItemTotals($get, $set)),
-                            TextInput::make('total_cost_currency')->label('جمع خرید ارزی')->numeric()->disabled()->dehydrated(),
+                            TextInput::make('total_cost_currency')->label('جمع خرید ارزی')->numeric()->disabled()->dehydrated()->suffix(fn (Get $get): string => (string) ($get('../../base_currency') ?: 'ارز')),
                             TextInput::make('total_price_irr')->label('جمع فروش (ریال)')->numeric()->disabled()->dehydrated(),
                         ])->columns(2)->defaultItems(1)->addActionLabel('افزودن کالا')->reorderable(),
                 ]),
                 Step::make('هزینه و تسعیر')->schema([
-                    Select::make('base_currency')->label('ارز پایه')->options(collect(QuotationCurrency::cases())->mapWithKeys(fn ($currency) => [$currency->value => $currency->value])->all())->default('USD')->required(),
-                    TextInput::make('exchange_rate')->label('نرخ ارز به ریال')->numeric()->minValue(0)->default(1)->required()->live(),
-                    TextInput::make('shipping_cost_base_currency')->label('حمل پایه ارزی')->numeric()->default(0)->live(),
-                    TextInput::make('shipping_weight_kg')->label('وزن حمل (کیلوگرم)')->numeric()->default(0)->live(),
-                    TextInput::make('shipping_rate_per_kg')->label('نرخ حمل هر کیلو')->numeric()->default(0)->live(),
-                    TextInput::make('shipping_volume_cbm')->label('حجم حمل (CBM)')->numeric()->default(0)->live(),
-                    TextInput::make('shipping_rate_per_cbm')->label('نرخ حمل هر CBM')->numeric()->default(0)->live(),
-                    TextInput::make('inspection_fee_base_currency')->label('بازرسی ارزی')->numeric()->default(0),
-                    TextInput::make('customs_duty_irr')->label('حقوق گمرکی (ریال)')->numeric()->default(0),
-                    TextInput::make('handling_fee_irr')->label('هزینه خدمات (ریال)')->numeric()->default(0),
-                    TextInput::make('margin_percentage')->label('درصد سود')->numeric()->minValue(0)->default(0)->live(),
-                    TextInput::make('tax_irr')->label('مالیات (ریال)')->numeric()->default(0),
+                    Select::make('base_currency')->label('ارز قیمت خرید کالا')->options(self::foreignCurrencyOptions())->default('USD')->required(),
+                    TextInput::make('exchange_rate')->label('نرخ تسعیر ارز به ریال')->numeric()->minValue(0)->default(1)->required()->live()->suffix('ریال / واحد ارز'),
+                    Select::make('shipping_currency')->label('واحد ارز حمل بین‌الملل')->options(self::foreignCurrencyOptions())->default('CNY')->required(),
+                    TextInput::make('shipping_weight_kg')->label('وزن کل')->numeric()->minValue(0)->default(0)->live()->suffix('کیلوگرم'),
+                    TextInput::make('shipping_rate_per_kg')->label('نرخ حمل بین‌الملل')->numeric()->minValue(0)->default(55)->live()->suffix('واحد ارز / کیلوگرم'),
+                    TextInput::make('customs_rate_per_kg_irr')->label('نرخ ترخیص و گمرک')->numeric()->minValue(0)->default(6950000)->live()->suffix('ریال / کیلوگرم'),
+                    TextInput::make('inland_shipping_irr')->label('حمل داخلی ایران')->numeric()->minValue(0)->default(0)->live()->suffix('ریال'),
+                    TextInput::make('unforeseen_cost_irr')->label('هزینه پیش‌بینی‌نشده')->numeric()->minValue(0)->default(0)->live()->suffix('ریال'),
+                    Select::make('profit_type')->label('نوع کارمزد / سود')->options([
+                        'percentage' => 'درصدی از مجموع هزینه‌ها',
+                        'fixed' => 'مبلغ مقطوع توافقی',
+                    ])->default('percentage')->required()->live(),
+                    TextInput::make('margin_percentage')->label('درصد سود')->numeric()->minValue(0)->default(0)->live()->suffix('%')
+                        ->visible(fn (Get $get): bool => $get('profit_type') !== 'fixed'),
+                    TextInput::make('profit_fixed_irr')->label('سود / کارمزد مقطوع')->numeric()->minValue(0)->default(0)->live()->suffix('ریال')
+                        ->visible(fn (Get $get): bool => $get('profit_type') === 'fixed'),
                 ])->columns(3),
                 Step::make('شرایط اعتباری')->schema([
                     Textarea::make('payment_terms')->label('شرایط پرداخت')->rows(4),
@@ -162,5 +166,13 @@ class QuotationResource extends Resource
         $set('total_price_irr', round($quantity * $price));
 
         return null;
+    }
+
+    private static function foreignCurrencyOptions(): array
+    {
+        return collect(QuotationCurrency::cases())
+            ->reject(fn (QuotationCurrency $currency): bool => $currency === QuotationCurrency::IRR)
+            ->mapWithKeys(fn (QuotationCurrency $currency): array => [$currency->value => $currency->value])
+            ->all();
     }
 }
